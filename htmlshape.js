@@ -1,29 +1,43 @@
 function htmlShape(src, indentString) {
   let indent = "  "
   if (indentString !== undefined) {
-    indent = indentString
+    indent = String.raw(indentString)
   }
-  let tagOpt = `(?:[^"]*".*?"|[^"]*)*?`
-  let mltLine = `address|article|aside|blockquote|body|details|dialog|div|dl|fieldset|figcaption|figure|footer|form|header|hgroup|hr|html|main|nav|ol|p|pre|section|table|ul`
+  let tagOpt = `(([ \t]*.*?=".*?"[ \t]*)+>|.*?>)`
+  let mltLine = `address|article|aside|blockquote|body|details|dialog|div|dl|fieldset|figcaption|figure|footer|form|head|header|hgroup|hr|html|main|nav|ol|p|pre|section|table|ul`
   let snglLine = `dd|dt|h1|h2|h3|h4|h5|h6|li|td`
-  let inline = `a|abbr|acronym|audio|b|bdi|bdo|big|br|button|canvas|cite|code|data|datalist|del|dfn|em|embed|i|iframe|img|input|ins|kbd|label|map|mark|meter|noscript|object|output|picture|progress|q|ruby|s|samp|script|select|slot|small|span|strong|sub|sup|svg|template|textarea|time|u|tt|var|video|wbr`
-  let ex_bothBeginRemove = new RegExp(`(<(?:${mltLine}|${snglLine})${tagOpt}>)\\s*`, "g")
-  let ex_bothEndRemove = new RegExp(`\\s*(<\\/(?:${mltLine}|${snglLine})${tagOpt}>)`, "g")
-  let ex_bothBegin = new RegExp(`(<(?:${mltLine}|${snglLine})${tagOpt}>)`, "g")
-  let ex_mltEnd = new RegExp(`(<\\/(?:${mltLine})${tagOpt}>)`, "g")
+  let oddTag = `!DOCTYPE html|meta`
+  let br = `br`
+  let spcTag = `script|style`
+  let ex_allBeginClean = new RegExp(`\\s*(<(?:${mltLine}|${snglLine}|${oddTag}|${br})${tagOpt})\\s*`, "g")
+  let ex_spcBeginClean = new RegExp(`\\s*(<(?:${spcTag})${tagOpt})`, "g")
+  let ex_comBeginClean = new RegExp(`\\s*(<!--.*)`, "g")
+  let ex_allEndClean = new RegExp(`\\s*(<\\/(?:${mltLine}|${snglLine})${tagOpt})\\s*`, "g")
+  let ex_spcEndClean = new RegExp(`\\s*(<\\/(?:${spcTag})${tagOpt})\\s*`, "g")
+  let ex_comEndClean = new RegExp(`(.*?-->)\\s*`, "g")
+  let ex_brClean = new RegExp(`\\s*(<${br} ?\/?>)\\s*`)
+  let ex_allBegin = new RegExp(`(<(?:${mltLine}|${snglLine}|${oddTag}|${spcTag})${tagOpt})`, "g")
+  let ex_comBegin = new RegExp(`(<!--.*)`, "g")
+  let ex_mltEnd = new RegExp(`(<\\/(?:${mltLine})${tagOpt})`, "g")
+  let ex_br = new RegExp(`(<${br} ?/?>)`, "g")
   let ex_newline = new RegExp(`^(<(?:${mltLine})>)((?!<(?:${mltLine})>).+)`, "gm")
   let work = src
-  .replace(/(\r?\n){2,}/gm, "")
-  .replace(/[ \t]+/g, " ")
-  .replace(ex_bothBeginRemove, "$1")
-  .replace(ex_bothEndRemove, "$1")
-  .replace(ex_bothBegin, "\n$1")
+  .replace(ex_allBeginClean, "$1")
+  .replace(ex_spcBeginClean, "$1")
+  .replace(ex_comBeginClean, "$1")
+  .replace(ex_allEndClean, "$1")
+  .replace(ex_spcEndClean, "\n$1")
+  .replace(ex_comEndClean, "$1")
+  .replace(ex_brClean, "$1")
+  .replace(ex_allBegin, "\n$1")
+  .replace(ex_comBegin, "\n$1")
   .replace(ex_mltEnd, "\n$1")
+  .replace(ex_br, "$1\n")
   .replace(ex_newline, "$1\n$2")
-  .split("\n")
+  .split(/\r?\n/)
   let i = 0
   let tagAccum = []
-  let ex_indTag = new RegExp(`^<(?<end>\\/?)(?<tag>${mltLine})${tagOpt}>`)
+  let ex_indTag = new RegExp(`^<(?<end>\\/?)(?<tag>${mltLine})${tagOpt}`)
   return new Promise(resolve => {
     fn()
     function fn() {
