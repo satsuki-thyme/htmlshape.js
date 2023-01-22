@@ -1,0 +1,160 @@
+
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+
+
+
+<head>
+
+
+
+
+      <meta>
+                  <meta>
+
+
+
+
+
+                                        <meta>
+<!--
+          注意書き
+                        -->
+                        <style>
+h1 {
+  font-size: 32px;
+}
+p {
+  font-size: 16px;
+}
+        </style>
+                <script>
+let elm_container = document.querySelector("#container")
+fetch("raw.html")
+.then(async rly => {
+  if (rly.ok) {
+    htmlShape(await rly.text())
+    .then(rly => {
+      elm_container.innerText = rly
+    })
+  }
+})
+                    </script>
+      </head>
+
+
+                  <body>
+
+
+<header>
+
+
+
+
+<h1>htmlShape.js
+
+
+</h1>
+</header>
+
+
+<main>
+                  <div>
+<p>
+  
+  
+  
+  
+  
+  
+  HTML を整形する JavaScript の<br />ライブラリです。</p>
+</div>
+
+<div>
+<ul>
+<!--
+          注意書き
+                        -->
+                        <li>初稿：2023/01/22
+
+
+
+
+                        </li>
+<li>目的：手元で整形したかった
+
+
+
+
+
+</li>
+<ul>
+
+
+
+
+<li>ウェブサービスを探すのも<br>
+                              面倒な気がした</li>
+
+
+
+
+                                <li>作ってみたくなった</li>
+
+
+                                                        <li>思いのほか苦労した</li>
+</ul>
+
+
+</ul>
+                          </div>
+<!--
+          注意書き
+                        -->
+                        </main>
+<footer>
+
+
+<p>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  &copy;Satsuki Thyme
+
+
+
+
+
+
+</p>
+
+
+</footer>
+                            </body>
+  </html>
+          
+
+
+
+
+
+
+
+
+
+
