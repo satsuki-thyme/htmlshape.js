@@ -3,24 +3,24 @@ function htmlShape(src, indentString) {
   if (indentString !== undefined) {
     indent = String.raw(indentString)
   }
-  let tagOpt = `(([ \t]*.*?=".*?"[ \t]*)+>|.*?>)`
+  let opt = `.*?>`
   let mltLine = `address|article|aside|blockquote|body|details|dialog|div|dl|fieldset|figcaption|figure|footer|form|head|header|hgroup|hr|html|main|nav|ol|p|pre|section|table|ul`
   let snglLine = `dd|dt|h1|h2|h3|h4|h5|h6|li|td`
   let oddTag = `!DOCTYPE html|meta`
   let br = `br`
   let spcTag = `script|style`
-  let ex_allBeginClean = new RegExp(`\\s*(<(?:${mltLine}|${snglLine}|${oddTag}|${br})${tagOpt})\\s*`, "g")
-  let ex_spcBeginClean = new RegExp(`\\s*(<(?:${spcTag})${tagOpt})`, "g")
+  let ex_allBeginClean = new RegExp(`\\s*(<(?:${mltLine}|${snglLine}|${oddTag}|${br})${opt})\\s*`, "g")
+  let ex_spcBeginClean = new RegExp(`\\s*(<(?:${spcTag})${opt})`, "g")
   let ex_comBeginClean = new RegExp(`\\s*(<!--.*)`, "g")
-  let ex_allEndClean = new RegExp(`\\s*(<\\/(?:${mltLine}|${snglLine})${tagOpt})\\s*`, "g")
-  let ex_spcEndClean = new RegExp(`\\s*(<\\/(?:${spcTag})${tagOpt})\\s*`, "g")
+  let ex_allEndClean = new RegExp(`\\s*(<\\/(?:${mltLine}|${snglLine})${opt})\\s*`, "g")
+  let ex_spcEndClean = new RegExp(`\\s*(<\\/(?:${spcTag})${opt})\\s*`, "g")
   let ex_comEndClean = new RegExp(`(.*?-->)\\s*`, "g")
   let ex_brClean = new RegExp(`\\s*(<${br} ?\/?>)\\s*`)
-  let ex_allBegin = new RegExp(`(<(?:${mltLine}|${snglLine}|${oddTag}|${spcTag})${tagOpt})`, "g")
+  let ex_allBegin = new RegExp(`(<(?:${mltLine}|${snglLine}|${oddTag}|${spcTag})${opt})`, "g")
   let ex_comBegin = new RegExp(`(<!--.*)`, "g")
-  let ex_mltEnd = new RegExp(`(<\\/(?:${mltLine})${tagOpt})`, "g")
+  let ex_mltEnd = new RegExp(`(<\\/(?:${mltLine})${opt})`, "g")
   let ex_br = new RegExp(`(<${br} ?/?>)`, "g")
-  let ex_newline = new RegExp(`^(<(?:${mltLine})>)((?!<(?:${mltLine})>).+)`, "gm")
+  let ex_newline = new RegExp(`^(<(?:${mltLine})${opt})((?!<(?:${mltLine})${opt}).*)`, "gm")
   let work = src
   .replace(ex_allBeginClean, "$1")
   .replace(ex_spcBeginClean, "$1")
@@ -37,7 +37,7 @@ function htmlShape(src, indentString) {
   .split(/\r?\n/)
   let i = 0
   let tagAccum = []
-  let ex_indTag = new RegExp(`^<(?<end>\\/?)(?<tag>${mltLine})${tagOpt}`)
+  let ex_indTag = new RegExp(`^<(?<end>\\/?)(?<tag>${mltLine})${opt}`)
   return new Promise(resolve => {
     fn()
     function fn() {
