@@ -1,4 +1,4 @@
-function htmlShape(src, indentString) {
+function htmlshape(src, indentString) {
   let indent = "  "
   if (indentString !== undefined) {
     indent = String.raw(indentString)
