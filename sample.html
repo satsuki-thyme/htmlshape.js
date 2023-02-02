@@ -5,7 +5,7 @@ let elm_container = document.querySelector("#container")
 fetch("raw.html")
 .then(async rly => {
   if (rly.ok) {
-    htmlShape(await rly.text())
+    htmlshape(await rly.text())
     .then(rly => {
       elm_container.innerText = rly
     })
