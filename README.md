@@ -1,4 +1,4 @@
-# htmlshape
+# htmlshape.js
 * HTML を入力すると整形して出力する JavaScript のライブラリです。
 
 ## 目次
