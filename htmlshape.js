@@ -4,7 +4,7 @@ function htmlshape(src, indentString) {
     indent = String.raw(indentString)
   }
   let opt = `.*?>`
-  let mltLine = `address|article|aside|blockquote|body|details|dialog|div|dl|fieldset|figcaption|figure|footer|form|head|header|hgroup|hr|html|main|nav|ol|p|pre|section|table|ul`
+  let mltLine = `address|article|aside|blockquote|body|details|dialog|div|dl|fieldset|figcaption|figure|footer|form|head(?!er)|header|hgroup|hr|html|main|nav|ol|p(?!re)|pre|section|table|ul`
   let snglLine = `dd|dt|h1|h2|h3|h4|h5|h6|li|td`
   let oddTag = `!DOCTYPE html|meta`
   let br = `br`
@@ -38,22 +38,34 @@ function htmlshape(src, indentString) {
   let i = 0
   let tagAccum = []
   let ex_indTag = new RegExp(`^<(?<end>\\/?)(?<tag>${mltLine})${opt}`)
+  let preExist = false
+  let codeExist = false
   return new Promise(resolve => {
     fn()
     function fn() {
       let match = work[i].match(ex_indTag)
-      if (match !== null) {
+      if (match) {
+        if (match.groups.tag === "pre" && match.groups.end === "") {
+          preExist = true
+        }
         if (match.groups.end === "") {
           work[i] = `${indent.repeat(tagAccum.length)}${work[i]}`
           tagAccum.push(match.groups.tag)
         }
         else if (match.groups.end === "/") {
           tagAccum.splice(-1, 1)
-          work[i] = `${indent.repeat(tagAccum.length)}${work[i]}`
+          if (preExist === false) {
+            work[i] = `${indent.repeat(tagAccum.length)}${work[i]}`
+          }
+          else {
+            preExist = false
+          }
         }
       }
       else {
-        work[i] = `${indent.repeat(tagAccum.length)}${work[i]}`
+        if (preExist === false) {
+          work[i] = `${indent.repeat(tagAccum.length)}${work[i]}`
+        }
       }
       if (i < work.length - 1) {
         i++
