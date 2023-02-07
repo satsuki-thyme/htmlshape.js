@@ -20,3 +20,6 @@
 * タグ間のスペース、タブ、改行を削除し、タグの入れ子に従って改行とタブを入れ直します。
 * HTML5 準拠のタグ以外は無視します。
 * タグ内の HTML5 準拠でない記述はそのまま残します。
+
+## CDN
+https://cdn.jsdelivr.net/gh/satsuki-thyme/htmlshape.js@main/htmlshape.min.js
