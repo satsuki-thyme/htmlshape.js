@@ -4,8 +4,8 @@ function htmlshape(src, indentString) {
     indent = String.raw(indentString)
   }
   let opt = `.*?>`
-  let mltLine = `address|article|aside|blockquote|body|details|dialog|div|dl|fieldset|figcaption|figure|footer|form|head(?!er)|header|hgroup|hr|html|main|nav|ol|p(?!re)|pre|section|table|ul`
-  let snglLine = `dd|dt|h1|h2|h3|h4|h5|h6|li|td`
+  let mltLine = `address|article|aside|blockquote|body|details|dialog|div|dl|fieldset|figcaption|figure|footer|form|head(?!er)|header|hgroup|hr|html|main|nav|ol|p(?!re)|pre|section|table|tbody|tfoot|thead|tr|ul`
+  let snglLine = `dd|dt|h1|h2|h3|h4|h5|h6|li|td|th`
   let oddTag = `!DOCTYPE html|meta`
   let br = `br`
   let spcTag = `script|style`
