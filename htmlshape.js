@@ -4,7 +4,7 @@ function htmlshape(src, indentString) {
     indent = String.raw(indentString)
   }
   let opt = `.*?>`
-  let multiLine = `address|article|aside|blockquote|body|details|dialog|div|dl|fieldset|figcaption|figure|footer|form|head(?!er)|header|hgroup|hr|html|main|nav|ol|p(?!re)|pre|section|table|tbody|tfoot|thead|tr|ul`
+  let multiLine = `address|article|aside|blockquote|body|details|dialog|div|dl|fieldset|figcaption|figure|footer|form|head|header|hgroup|hr|html|main|nav|ol|p|pre|section|table|tbody|thead|tr|ul`
   let singleLine = `dd|dt|h1|h2|h3|h4|h5|h6|li|td|th`
   let oddTag = `!DOCTYPE html|meta`
   let br = `br`
@@ -20,20 +20,20 @@ function htmlshape(src, indentString) {
   let ex_commentBegin = new RegExp(`(<!--.*)`, "g")
   let ex_multiEnd = new RegExp(`(<\\/(?:${multiLine})${opt})`, "g")
   let ex_br = new RegExp(`(<${br} ?/?>)`, "g")
-  let ex_newline = new RegExp(`^(<(?:${multiLine})${opt})((?!<(?:${multiLine})${opt}).*)`, "gm")
+  let ex_newline = new RegExp(`(<(?:${multiLine})${opt})(.+)`, "g")
   let work = src
   .replace(ex_allBeginClean, "$1")
   .replace(ex_specialBeginClean, "$1")
   .replace(ex_commentBeginClean, "$1")
   .replace(ex_allEndClean, "$1")
-  .replace(ex_specialEndClean, "\n$1")
+  .replace(ex_specialEndClean, "$1")
   .replace(ex_commentEndClean, "$1")
   .replace(ex_brClean, "$1")
   .replace(ex_allBegin, "\n$1")
   .replace(ex_commentBegin, "\n$1")
   .replace(ex_multiEnd, "\n$1")
   .replace(ex_br, "$1\n")
-  .replace(ex_newline, "$1$2")
+  .replace(ex_newline, "$1\n$2")
   .split(/\r?\n/)
   let i = 0
   let tagAccum = []
