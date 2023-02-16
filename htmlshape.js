@@ -4,40 +4,40 @@ function htmlshape(src, indentString) {
     indent = String.raw(indentString)
   }
   let opt = `.*?>`
-  let mltLine = `address|article|aside|blockquote|body|details|dialog|div|dl|fieldset|figcaption|figure|footer|form|head(?!er)|header|hgroup|hr|html|main|nav|ol|p(?!re)|pre|section|table|tbody|tfoot|thead|tr|ul`
-  let snglLine = `dd|dt|h1|h2|h3|h4|h5|h6|li|td|th`
+  let multiLine = `address|article|aside|blockquote|body|details|dialog|div|dl|fieldset|figcaption|figure|footer|form|head(?!er)|header|hgroup|hr|html|main|nav|ol|p(?!re)|pre|section|table|tbody|tfoot|thead|tr|ul`
+  let singleLine = `dd|dt|h1|h2|h3|h4|h5|h6|li|td|th`
   let oddTag = `!DOCTYPE html|meta`
   let br = `br`
-  let spcTag = `script|style`
-  let ex_allBeginClean = new RegExp(`\\s*(<(?:${mltLine}|${snglLine}|${oddTag}|${br})${opt})\\s*`, "g")
-  let ex_spcBeginClean = new RegExp(`\\s*(<(?:${spcTag})${opt})`, "g")
-  let ex_comBeginClean = new RegExp(`\\s*(<!--.*)`, "g")
-  let ex_allEndClean = new RegExp(`\\s*(<\\/(?:${mltLine}|${snglLine})${opt})\\s*`, "g")
-  let ex_spcEndClean = new RegExp(`\\s*(<\\/(?:${spcTag})${opt})\\s*`, "g")
-  let ex_comEndClean = new RegExp(`(.*?-->)\\s*`, "g")
+  let specialTag = `script|style`
+  let ex_allBeginClean = new RegExp(`\\s*(<(?:${multiLine}|${singleLine}|${oddTag}|${br})${opt})\\s*`, "g")
+  let ex_specialBeginClean = new RegExp(`\\s*(<(?:${specialTag})${opt})`, "g")
+  let ex_commentBeginClean = new RegExp(`\\s*(<!--.*)`, "g")
+  let ex_allEndClean = new RegExp(`\\s*(<\\/(?:${multiLine}|${singleLine})${opt})\\s*`, "g")
+  let ex_specialEndClean = new RegExp(`\\s*(<\\/(?:${specialTag})${opt})\\s*`, "g")
+  let ex_commentEndClean = new RegExp(`(.*?-->)\\s*`, "g")
   let ex_brClean = new RegExp(`\\s*(<${br} ?\/?>)\\s*`)
-  let ex_allBegin = new RegExp(`(<(?:${mltLine}|${snglLine}|${oddTag}|${spcTag})${opt})`, "g")
-  let ex_comBegin = new RegExp(`(<!--.*)`, "g")
-  let ex_mltEnd = new RegExp(`(<\\/(?:${mltLine})${opt})`, "g")
+  let ex_allBegin = new RegExp(`(<(?:${multiLine}|${singleLine}|${oddTag}|${specialTag})${opt})`, "g")
+  let ex_commentBegin = new RegExp(`(<!--.*)`, "g")
+  let ex_multiEnd = new RegExp(`(<\\/(?:${multiLine})${opt})`, "g")
   let ex_br = new RegExp(`(<${br} ?/?>)`, "g")
-  let ex_newline = new RegExp(`^(<(?:${mltLine})${opt})((?!<(?:${mltLine})${opt}).*)`, "gm")
+  let ex_newline = new RegExp(`^(<(?:${multiLine})${opt})((?!<(?:${multiLine})${opt}).*)`, "gm")
   let work = src
   .replace(ex_allBeginClean, "$1")
-  .replace(ex_spcBeginClean, "$1")
-  .replace(ex_comBeginClean, "$1")
+  .replace(ex_specialBeginClean, "$1")
+  .replace(ex_commentBeginClean, "$1")
   .replace(ex_allEndClean, "$1")
-  .replace(ex_spcEndClean, "\n$1")
-  .replace(ex_comEndClean, "$1")
+  .replace(ex_specialEndClean, "\n$1")
+  .replace(ex_commentEndClean, "$1")
   .replace(ex_brClean, "$1")
   .replace(ex_allBegin, "\n$1")
-  .replace(ex_comBegin, "\n$1")
-  .replace(ex_mltEnd, "\n$1")
+  .replace(ex_commentBegin, "\n$1")
+  .replace(ex_multiEnd, "\n$1")
   .replace(ex_br, "$1\n")
-  .replace(ex_newline, "$1\n$2")
+  .replace(ex_newline, "$1$2")
   .split(/\r?\n/)
   let i = 0
   let tagAccum = []
-  let ex_indTag = new RegExp(`^<(?<end>\\/?)(?<tag>${mltLine})${opt}`)
+  let ex_indTag = new RegExp(`^<(?<end>\\/?)(?<tag>${multiLine})${opt}`)
   let preExist = false
   let codeExist = false
   return new Promise(resolve => {
