@@ -4,13 +4,13 @@ function htmlshape(src, indentString) {
     indent = String.raw(indentString)
   }
   let opt = `.*?>`
-  let multiLine = `address|article|aside|blockquote|body|details|dialog|div|dl|fieldset|figcaption|figure|footer|form|head|header|hgroup|hr|html|main|nav|ol|p|pre|section|table|tbody|thead|tr|ul`
-  let singleLine = `dd|dt|h1|h2|h3|h4|h5|h6|li|td|th`
+  let multiLine = `address|article|aside|blockquote|(?<!t)body|details|dialog|div|dl|fieldset|figcaption|figure|footer|form|(?<!t)head(?!er)|header|hgroup|hr|html|main|nav|ol|p(?!re)|pre|section|table|tbody|thead|tr|ul`
+  let singleLine = `code|dd|dt|h1|h2|h3|h4|h5|h6|li|td|th`
   let oddTag = `!DOCTYPE html|meta`
   let br = `br`
   let specialTag = `script|style`
   let ex_allBeginClean = new RegExp(`\\s*(<(?:${multiLine}|${singleLine}|${oddTag}|${br})${opt})\\s*`, "g")
-  let ex_specialBeginClean = new RegExp(`\\s*(<(?:${specialTag})${opt})`, "g")
+  let ex_specialBeginClean = new RegExp(`\\s*(<(?:${specialTag})${opt})\\s*`, "g")
   let ex_commentBeginClean = new RegExp(`\\s*(<!--.*)`, "g")
   let ex_allEndClean = new RegExp(`\\s*(<\\/(?:${multiLine}|${singleLine})${opt})\\s*`, "g")
   let ex_specialEndClean = new RegExp(`\\s*(<\\/(?:${specialTag})${opt})\\s*`, "g")
@@ -20,7 +20,7 @@ function htmlshape(src, indentString) {
   let ex_commentBegin = new RegExp(`(<!--.*)`, "g")
   let ex_multiEnd = new RegExp(`(<\\/(?:${multiLine})${opt})`, "g")
   let ex_br = new RegExp(`(<${br} ?/?>)`, "g")
-  let ex_newline = new RegExp(`(<(?:${multiLine})${opt})(.+)`, "g")
+  let ex_newline = new RegExp(`(<(?:${multiLine})${opt})(?:(?!<(?:${multiLine}|${singleLine})${opt})(.+))`, "g")
   let work = src
   .replace(ex_allBeginClean, "$1")
   .replace(ex_specialBeginClean, "$1")
@@ -37,9 +37,8 @@ function htmlshape(src, indentString) {
   .split(/\r?\n/)
   let i = 0
   let tagAccum = []
-  let ex_indTag = new RegExp(`^<(?<end>\\/?)(?<tag>${multiLine})${opt}`)
+  let ex_indTag = new RegExp(`^<(?<end>\\/?)(?<tag>${multiLine}|${singleLine})${opt}`)
   let preExist = false
-  let codeExist = false
   return new Promise(resolve => {
     fn()
     function fn() {
@@ -47,19 +46,24 @@ function htmlshape(src, indentString) {
       if (match) {
         if (match.groups.tag === "pre" && match.groups.end === "") {
           preExist = true
+          tagAccum.push(match.groups.tag)
         }
-        if (match.groups.end === "") {
+        else if (match.groups.tag === "pre" && match.groups.end === "/") {
+          preExist = false
+          tagAccum.splice(-1, 1)
+        }
+        if (preExist === false && match.groups.end === "") {
           work[i] = `${indent.repeat(tagAccum.length)}${work[i]}`
           tagAccum.push(match.groups.tag)
         }
-        else if (match.groups.end === "/") {
+        else if (preExist === false && match.groups.end === "/") {
           tagAccum.splice(-1, 1)
           if (preExist === false) {
             work[i] = `${indent.repeat(tagAccum.length)}${work[i]}`
           }
-          else {
-            preExist = false
-          }
+        }
+        else if (preExist === true && match.groups.tag === "code") {
+          work[i] = `${indent.repeat(tagAccum.length)}${work[i]}`
         }
       }
       else {
