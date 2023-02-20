@@ -37,7 +37,7 @@ function htmlshape(src, indentString) {
   .split(/\r?\n/)
   let i = 0
   let tagAccum = []
-  let ex_indTag = new RegExp(`^<(?<end>\\/?)(?<tag>${multiLine}|${singleLine})${opt}`)
+  let ex_indTag = new RegExp(`^<(?<end>\\/?)(?<tag>${multiLine})${opt}`)
   let preExist = false
   return new Promise(resolve => {
     fn()
